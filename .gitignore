@@ -1,0 +1,60 @@
+# Codex instructions
+AGENTS.md
+**/AGENTS.md
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# IDE / editors
+.idea/
+*.iml
+
+# VS Code workspace-level local files
+.vscode/
+
+# Java / Kotlin / Gradle
+.gradle/
+build/
+out/
+*.class
+
+# Android
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Node / frontend
+node_modules/
+dist/
+coverage/
+
+# Backend runtime / generated
+target/
+
+# Docker / local data
+docker-data/
+data/
+
+# Python tooling that may appear in scripts
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Misc generated files
+*.swp
+*.swo
