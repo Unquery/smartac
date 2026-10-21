@@ -74,7 +74,25 @@ This confines future protocol changes to the control module while preserving the
 
 **Consequences**
 
-The initial implementation retains `IRFujitsuAC` with the confirmed `ARRAH2E` variant. A future switch to the library's common `IRac` interface requires compatibility verification. The current startup OFF request remains prototype behavior, not an accepted long-term startup policy.
+The implementation uses the library's common `IRac` interface behind SmartAC-owned profile and settings types. Only Fujitsu `ARRAH2E` is currently enabled, with explicit settings validation. Builds and host tests do not establish physical compatibility of the new transmission path; hardware verification remains required. The current startup OFF request remains prototype behavior, not an accepted long-term startup policy.
+
+---
+
+## 2026-10-21 — Complete AC-control requests and strict validation
+
+**Decision**
+
+Each control request supplies the selected protocol/model profile and all basic requested settings: power, mode, temperature, fan, and both swing axes. Do not infer missing values from previous requests.
+
+Reject invalid or unsupported requests without sending IR. Do not silently clamp values, substitute settings, or drop requested options. App and web input constraints complement firmware validation rather than replacing it.
+
+**Reason**
+
+Complete requests make the intended settings explicit and avoid hidden reset defaults. Firmware validation enforces the same contract for every caller.
+
+**Consequences**
+
+The current API replaces parameterless ON/OFF helpers with one `send(profile, settings)` operation and a rejection result. Additional profiles or settings require explicit validation before being enabled. A successful send result means the library accepted and attempted transmission, not that the AC applied the request. Some protocols, including Fujitsu, encode OFF as a dedicated command without applying the remaining settings.
 
 ---
 

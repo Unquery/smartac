@@ -17,7 +17,11 @@ The ESP32-S3 firmware project builds with PlatformIO using the Arduino framework
 
 The current program initializes IR control and transmits one Fujitsu OFF request at startup, using `ARRAH2E` with swing disabled. The main loop is empty.
 
-`AcControl` provides a brand-independent interface, with the Fujitsu library object, GPIO6 configuration, and transmission details kept inside its implementation. Initialization does not transmit a command; `main.cpp` explicitly requests the startup transmission.
+`AcControl` accepts an explicit `AcProfile` and complete `AcSettings` for each request. Its implementation uses IRremoteESP8266's common `IRac` interface on GPIO6. Initialization does not transmit a command; `main.cpp` explicitly requests the startup transmission.
+
+Only the Fujitsu `ARRAH2E` profile is currently enabled. Requests support power, auto/cool/heat/dry/fan mode, whole-degree Celsius settings from 16 to 30, auto/quiet/low/medium/high fan, and off/auto swing on each axis. Invalid or unsupported requests are rejected before transmission. No previous request is used to fill omitted settings, and transmission does not establish observed physical AC state.
+
+The common-interface implementation passes the ESP32-S3 build and host tests for validation and request translation. The new `IRac` transmission path has not yet been physically retested; earlier hardware results below apply to the prior Fujitsu-specific experiments. Startup testing continues to use swing OFF.
 
 Previously physically tested subsystems (not all present in the current program):
 
@@ -81,4 +85,4 @@ The following major areas are still planned rather than implemented:
 
 ## Immediate next step
 
-Continue organizing firmware around the AC-control boundary, introduce explicit requested AC state, and restore previously tested peripheral support before adding network/backend functionality.
+Physically verify the common-interface Fujitsu transmission path, then continue Phase 1 with previously tested peripheral support and safe compatibility pairing before adding network/backend functionality.
