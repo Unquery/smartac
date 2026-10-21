@@ -15,7 +15,11 @@ Android, backend, web, and infrastructure modules have not been created yet.
 
 The ESP32-S3 firmware project builds with PlatformIO using the Arduino framework.
 
-Confirmed working subsystems:
+The current program initializes IR control and transmits one Fujitsu OFF request at startup, using `ARRAH2E` with swing disabled. The main loop is empty.
+
+`AcControl` provides a brand-independent interface, with the Fujitsu library object, GPIO6 configuration, and transmission details kept inside its implementation. Initialization does not transmit a command; `main.cpp` explicitly requests the startup transmission.
+
+Previously physically tested subsystems (not all present in the current program):
 
 - SHT41 temperature and humidity sensor over I2C.
 - CHQ1838D 38 kHz IR receiver.
@@ -40,10 +44,7 @@ Swing should remain disabled during protocol testing unless intentionally requir
 
 ## Current firmware-related libraries
 
-Known project dependencies include:
-
-- Adafruit SHT4x Library
-- IRremoteESP8266
+The current configured dependency is IRremoteESP8266. The SHT41 was previously tested using Adafruit SHT4x Library, but sensor code and that dependency are absent from the current firmware.
 
 The exact current contents of `platformio.ini` remain the source of truth for firmware dependencies.
 
@@ -80,4 +81,4 @@ The following major areas are still planned rather than implemented:
 
 ## Immediate next step
 
-Before adding network/backend functionality, inspect and cleanly organize the current firmware code while preserving the confirmed working hardware behavior.
+Continue organizing firmware around the AC-control boundary, introduce explicit requested AC state, and restore previously tested peripheral support before adding network/backend functionality.

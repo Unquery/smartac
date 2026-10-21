@@ -60,6 +60,24 @@ Protocol handling should build on the library rather than implementing Fujitsu I
 
 ---
 
+## 2026-10-21 — AC-control module boundary
+
+**Decision**
+
+Expose brand-independent AC-control operations through `AcControl`, keeping protocol-specific library objects, constants, and command translation inside its implementation.
+
+Keep initialization separate from transmission, so application code explicitly decides when to send commands. A transmitted request does not establish observed physical AC state.
+
+**Reason**
+
+This confines future protocol changes to the control module while preserving the currently working Fujitsu implementation. Separate drivers for additional brands will be introduced only when needed.
+
+**Consequences**
+
+The initial implementation retains `IRFujitsuAC` with the confirmed `ARRAH2E` variant. A future switch to the library's common `IRac` interface requires compatibility verification. The current startup OFF request remains prototype behavior, not an accepted long-term startup policy.
+
+---
+
 ## 2026-10-21 — AC pairing strategy
 
 **Decision**
