@@ -3,7 +3,26 @@
 #include "ClimateSensor.h"
 #include <Wire.h>
 
-constexpr uint8_t PERIPHERAL_POWER_PIN = 4;
+namespace
+{
+    constexpr uint8_t PERIPHERAL_POWER_PIN = 4;
+    constexpr uint32_t CLIMATE_READ_INTERVAL_MS = 5000;
+    uint32_t lastClimateReadMs = 0;
+
+    void printClimateReading()
+    {
+        ClimateSensor::Reading reading{};
+        if (ClimateSensor::read(reading))
+        {
+            Serial.printf("Temperature: %.2f degrees C\n", reading.temperatureC);
+            Serial.printf("Humidity: %.2f%% rH\n", reading.humidityPercent);
+        }
+        else
+        {
+            Serial.println("SHT4x read failed");
+        }
+    }
+}
 
 void setup()
 {
@@ -12,7 +31,7 @@ void setup()
     while (!Serial) delay(10);
     pinMode(PERIPHERAL_POWER_PIN, OUTPUT);
     digitalWrite(PERIPHERAL_POWER_PIN, LOW);
-    delay(10);
+    delay(5000);
 
     Wire.begin(8,9);
 
@@ -22,16 +41,8 @@ void setup()
         while (1) delay(1);
     }
 
-    ClimateSensor::Reading reading{};
-    if (ClimateSensor::read(reading))
-    {
-        Serial.printf("Temperature: %.2f degrees C\n", reading.temperatureC);
-        Serial.printf("Humidity: %.2f%% rH\n", reading.humidityPercent);
-    }
-    else
-    {
-        Serial.println("SHT4x read failed");
-    }
+    lastClimateReadMs = millis();
+    printClimateReading();
 
     AcControl::begin();
 
@@ -61,4 +72,11 @@ void setup()
 
 void loop()
 {
+    const uint32_t now = millis();
+    // Unsigned elapsed-time subtraction also works when millis() wraps around.
+    if (now - lastClimateReadMs >= CLIMATE_READ_INTERVAL_MS)
+    {
+        lastClimateReadMs = now;
+        printClimateReading();
+    }
 }
