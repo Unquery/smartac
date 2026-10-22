@@ -1,12 +1,11 @@
 #include <Arduino.h>
 #include "AcControl.h"
 #include "ClimateSensor.h"
+#include "Config.h"
 #include <Wire.h>
 
 namespace
 {
-    constexpr uint8_t PERIPHERAL_POWER_PIN = 4;
-    constexpr uint32_t CLIMATE_READ_INTERVAL_MS = 5000;
     uint32_t lastClimateReadMs = 0;
 
     void printClimateReading()
@@ -26,14 +25,14 @@ namespace
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(Config::SERIAL_BAUD_RATE);
 
     while (!Serial) delay(10);
-    pinMode(PERIPHERAL_POWER_PIN, OUTPUT);
-    digitalWrite(PERIPHERAL_POWER_PIN, LOW);
-    delay(5000);
+    pinMode(Config::PERIPHERAL_POWER_PIN, OUTPUT);
+    digitalWrite(Config::PERIPHERAL_POWER_PIN, LOW);
+    delay(Config::STARTUP_DELAY_MS);
 
-    Wire.begin(8,9);
+    Wire.begin(Config::I2C_SDA_PIN, Config::I2C_SCL_PIN);
 
     if (!ClimateSensor::begin())
     {
@@ -74,7 +73,7 @@ void loop()
 {
     const uint32_t now = millis();
     // Unsigned elapsed-time subtraction also works when millis() wraps around.
-    if (now - lastClimateReadMs >= CLIMATE_READ_INTERVAL_MS)
+    if (now - lastClimateReadMs >= Config::CLIMATE_READ_INTERVAL_MS)
     {
         lastClimateReadMs = now;
         printClimateReading();

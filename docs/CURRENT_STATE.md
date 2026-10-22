@@ -15,6 +15,8 @@ Android, backend, web, and infrastructure modules have not been created yet.
 
 The ESP32-S3 firmware project builds with PlatformIO using the Arduino framework.
 
+Firmware board pins, serial baud rate, startup wait, and climate sampling interval are defined as compile-time settings in `firmware/include/Config.h`.
+
 The current program initializes IR control and transmits one Fujitsu OFF request at startup, using `ARRAH2E` with swing disabled. The main loop uses elapsed `millis()` time to request and print a climate reading every five seconds, without a delay between samples. Each sensor read still briefly waits for the measurement to complete.
 
 SHT41 access is encapsulated in `ClimateSensor`, exposing initialization and temperature/humidity readings without Adafruit types in its public interface. It uses medium precision with the heater disabled and leaves the output unchanged if a read fails or initialization has not succeeded. `main.cpp` enables peripheral power, initializes I2C, and prints a startup reading before beginning periodic reads. The user has physically verified readings through the extracted module on the switched peripheral rail, using SDA GPIO8 and SCL GPIO9. The periodic sampling flow still needs a hardware retest.

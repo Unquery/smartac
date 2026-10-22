@@ -1,4 +1,5 @@
 #include "AcControl.h"
+#include "Config.h"
 
 #include <cmath>
 #include <IRac.h>
@@ -8,9 +9,7 @@
 namespace
 {
 
-    constexpr uint16_t IR_TX_PIN = 6;
-
-    IRac ac(IR_TX_PIN);
+    IRac ac(Config::IR_TX_PIN);
     bool initialized = false;
 
 }
@@ -20,7 +19,7 @@ namespace AcControl
 
     void begin()
     {
-        IRsend sender(IR_TX_PIN);
+        IRsend sender(Config::IR_TX_PIN);
         sender.begin();
         initialized = true;
     }
