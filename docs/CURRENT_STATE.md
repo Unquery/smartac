@@ -17,11 +17,13 @@ The ESP32-S3 firmware project builds with PlatformIO using the Arduino framework
 
 The current program initializes IR control and transmits one Fujitsu OFF request at startup, using `ARRAH2E` with swing disabled. The main loop is empty.
 
+SHT41 access is encapsulated in `ClimateSensor`, exposing initialization and temperature/humidity readings without Adafruit types in its public interface. It uses medium precision with the heater disabled and leaves the output unchanged if a read fails or initialization has not succeeded. `main.cpp` enables peripheral power, initializes I2C, and prints a single startup reading. The user confirmed serial readings before this extraction on the switched peripheral rail, using SDA GPIO8 and SCL GPIO9; the extracted module still needs a hardware retest.
+
 `AcControl` accepts an explicit `AcProfile` and complete `AcSettings` for each request. Its implementation uses IRremoteESP8266's common `IRac` interface on GPIO6. Initialization does not transmit a command; `main.cpp` explicitly requests the startup transmission.
 
 Only the Fujitsu `ARRAH2E` profile is currently enabled. Requests support power, auto/cool/heat/dry/fan mode, whole-degree Celsius settings from 16 to 30, auto/quiet/low/medium/high fan, and off/auto swing on each axis. Invalid or unsupported requests are rejected before transmission. No previous request is used to fill omitted settings, and transmission does not establish observed physical AC state.
 
-The common-interface implementation passes the ESP32-S3 build and host tests for validation and request translation. The new `IRac` transmission path has not yet been physically retested; earlier hardware results below apply to the prior Fujitsu-specific experiments. Startup testing continues to use swing OFF.
+The common-interface implementation passes the ESP32-S3 build and host tests for validation and request translation. The user has physically verified ON and OFF commands through the `AcControl` / `IRac` transmission path with the Fujitsu `ARRAH2E` profile and swing OFF. Operation without an added startup delay has also been confirmed in the tested setup. Other supported settings have not all been physically verified.
 
 Previously physically tested subsystems (not all present in the current program):
 
@@ -48,7 +50,7 @@ Swing should remain disabled during protocol testing unless intentionally requir
 
 ## Current firmware-related libraries
 
-The current configured dependency is IRremoteESP8266. The SHT41 was previously tested using Adafruit SHT4x Library, but sensor code and that dependency are absent from the current firmware.
+The current configured dependencies are IRremoteESP8266 and Adafruit SHT4x Library. The latter provides the restored SHT41 readings.
 
 The exact current contents of `platformio.ini` remain the source of truth for firmware dependencies.
 
@@ -85,4 +87,4 @@ The following major areas are still planned rather than implemented:
 
 ## Immediate next step
 
-Physically verify the common-interface Fujitsu transmission path, then continue Phase 1 with previously tested peripheral support and safe compatibility pairing before adding network/backend functionality.
+Continue Phase 1 with previously tested peripheral support and safe compatibility pairing before adding network/backend functionality.

@@ -74,7 +74,7 @@ This confines future protocol changes to the control module while preserving the
 
 **Consequences**
 
-The implementation uses the library's common `IRac` interface behind SmartAC-owned profile and settings types. Only Fujitsu `ARRAH2E` is currently enabled, with explicit settings validation. Builds and host tests do not establish physical compatibility of the new transmission path; hardware verification remains required. The current startup OFF request remains prototype behavior, not an accepted long-term startup policy.
+The implementation uses the library's common `IRac` interface behind SmartAC-owned profile and settings types. Only Fujitsu `ARRAH2E` is currently enabled, with explicit settings validation. Builds and host tests alone do not establish physical compatibility; the user has now verified ON and OFF through this path with swing OFF. Other settings still require physical verification. The current startup OFF request remains prototype behavior, not an accepted long-term startup policy.
 
 ---
 
