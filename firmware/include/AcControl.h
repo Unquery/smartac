@@ -1,71 +1,80 @@
 #pragma once
 
-namespace AcControl {
+namespace AcControl
+{
 
-enum class AcProtocol {
-    Unknown,
-    Fujitsu,
-};
+    enum class AcProtocol
+    {
+        Unknown,
+        Fujitsu,
+    };
 
-// Compatible remote variants, not exact indoor-unit models.
-enum class AcModel {
-    Unknown,
-    FujitsuArrah2e,
-};
+    // Compatible remote variants, not exact indoor-unit models.
+    enum class AcModel
+    {
+        Unknown,
+        FujitsuArrah2e,
+    };
 
-struct AcProfile {
-    AcProtocol protocol;
-    AcModel model;
-};
+    struct AcProfile
+    {
+        AcProtocol protocol;
+        AcModel model;
+    };
 
-enum class AcMode {
-    Unknown,
-    Auto,
-    Cool,
-    Heat,
-    Dry,
-    Fan,
-};
+    enum class AcMode
+    {
+        Unknown,
+        Auto,
+        Cool,
+        Heat,
+        Dry,
+        Fan,
+    };
 
-enum class AcFanSpeed {
-    Unknown,
-    Auto,
-    Quiet,
-    Low,
-    Medium,
-    High,
-};
+    enum class AcFanSpeed
+    {
+        Unknown,
+        Auto,
+        Quiet,
+        Low,
+        Medium,
+        High,
+    };
 
-enum class AcSwing {
-    Unknown,
-    Off,
-    Auto,
-};
+    enum class AcSwing
+    {
+        Unknown,
+        Off,
+        Auto,
+    };
 
-// Supply every setting on each call. No previous request is retained.
-struct AcSettings {
-    bool power;
-    AcMode mode;
-    float temperatureC;
-    AcFanSpeed fan;
-    AcSwing verticalSwing;
-    AcSwing horizontalSwing;
-};
+    // Supply every setting on each call. No previous request is retained.
+    struct AcSettings
+    {
+        bool power;
+        AcMode mode;
+        float temperatureC;
+        AcFanSpeed fan;
+        AcSwing verticalSwing;
+        AcSwing horizontalSwing;
+    };
 
-enum class SendResult {
-    Sent,
-    NotInitialized,
-    UnsupportedProfile,
-    InvalidTemperature,
-    UnsupportedMode,
-    UnsupportedFanSpeed,
-    UnsupportedSwing,
-};
+    enum class SendResult
+    {
+        Sent,
+        NotInitialized,
+        UnsupportedProfile,
+        InvalidTemperature,
+        UnsupportedMode,
+        UnsupportedFanSpeed,
+        UnsupportedSwing,
+    };
 
-// Initialize IR control without transmitting a command.
-void begin();
+    // Initialize IR control without transmitting a command.
+    void begin();
 
-// Rejected requests transmit nothing. Sent does not confirm physical AC state.
-SendResult send(const AcProfile& profile, const AcSettings& settings);
+    // Rejected requests transmit nothing. Sent does not confirm physical AC state.
+    SendResult send(const AcProfile &profile, const AcSettings &settings);
 
 }
